@@ -1,0 +1,95 @@
+const express = require("express");
+const app = express();
+
+app.get("/dd", (req, res, next) => {
+  return res.json({ msg: "get" });
+});
+app.patch("/user/:id/:name", (req, res, next) => {
+    const id = req.params.id
+    const name = req.params.name;
+  return res.status(200).json({ msg: id , name: name });
+});
+app.post("/dd", (req, res, next) => {
+  return res.status(200).json({ msg: "post" });
+});
+
+app.delete("/user/:id",(req,res,next)=>{
+  let id = req.params.id;
+  res.json({msg: 'Delete id is' + id})
+})
+
+app.get("/res", (req, res, next) => {
+  return res.send("hehe");
+});
+
+app.get("*", (res, req, next) => {
+  return res.json({ msg: "message not found" });
+});
+
+app.listen(3000, console.log("server running at port 3000"));
+
+
+
+----------------------------------------------------------------------------
+
+
+
+const express = require("express");
+const app = express();
+app.use(express.json());
+let users = [
+  {
+    id: 1,
+    name: "mg mg",
+    age: 18,
+  },
+  {
+    id: 2,
+    name: "Kyaw Kyaw",
+    age: 18,
+  },
+  {
+    id: 3,
+    name: "Zaw Zaw",
+    age: 18,
+  },
+];
+
+app.post("/users", (req, res, next) => {
+  const { id, name, age } = req.body;
+  const newUser = {
+    id: id,
+    name: name,
+    age: age,
+  };
+  console.log(newUser);
+  users.push(newUser);
+  res.json(users);
+});
+
+app.get("/users", (req, res, next) => {
+  res.json(users);
+});
+app.get("/users/:id", (req, res, next) => {
+  const id = req.params.id;
+  const user = users.find((user) => user.id == id);
+  user ? res.json(user) : res.json({ msg: "user not found" });
+});
+app.patch("/users/:id", (req, res, next) => {
+  const id = req.params.id;
+  const editusr = users.find((user) => user.id == id);
+  editusr
+    ? ((editusr.name = req.body.name), res.json(users))
+    : res.json({ msg: "user not found" });
+});
+app.delete("/users/:id", (req, res, next) => {
+  const id = req.params.id;
+  users = users.filter((user) => user.id != id);
+  res.json(users);
+});
+
+app.get("*", (req, res) => {
+  res.send({ msg: "no route found!" });
+});
+
+app.listen(3000, console.log("Server is running at port 3000"));
